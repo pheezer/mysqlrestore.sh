@@ -8,28 +8,28 @@
 SOCKET=/tmp/mysql_sock
 PID=/tmp/mysql_pid
 ERROR_LOG=/tmp/mysql_restore.log
-CURDATADIR=mysql -uadmin -p`cat /etc/psa/.psa.shadow` -Ns -e"show variables like 'datadir';"| awk '{print $2}'
+CURDATADIR=$(mysql -uadmin -p`cat /etc/psa/.psa.shadow` -Ns -e"show variables like 'datadir';"| awk '{print $2}')
 #Where is your data?
-echo "Please provide the location of your MySQL data directory that was restored:";
+echo "Please provide the full path of your MySQL data directory that was restored:";
 
 read DATADIR
 
 if [ ! -d "$DATADIR" ]; then
-	echo "This directory does not exist.";
+	echo "This directory does not exist. Exiting.";
 	exit 0;
 fi
-#This next part is broken.  I need to pass the information that is 'read' to a function possibly?
-if [ -d "$CURDATADIR" ]; then
-	echo "This data directory is already being used by MySQL";
+
+if [ "$DATADIR" ==  $CURDATADIR -o "$DATADIR" == ${CURDATADIR%/} ]; then
+	echo "This data directory is already being used by MySQL. Exiting.";
         exit 0;
 fi
 
-echo "Please provide the absolute path to the directory you would like to place your .sql files in:";
+echo "Please provide the full path of the directory you would like to place your .sql files in:";
 
 read RESTOREDIR
 
 if [ ! -d "$RESTOREDIR" ]; then
-	echo "Creating directory $RESTOREDIR, since it doesn't seem to exist";
+	echo "Creating directory $RESTOREDIR, since it doesn't seem to exist..";
 	mkdir -p $RESTOREDIR;
 fi
 
@@ -47,7 +47,7 @@ echo "Exporting databases:";
 mysql -u'admin' -p$(cat /etc/psa/.psa.shadow) --socket=$SOCKET -Ns -e'show databases;'| perl -ne 'print unless /\b(mysql|psa|horde|atmail|information_schema|sitebuilder.*|phpmyadmin.*)\b/'|while read x
 	do
 		echo $x;
-		 mysqldump --add-drop-table -u'admin' --socket=$SOCKET -p$(cat /etc/psa/.psa.shadow) $x > "$RESTOREDIR"$x.sql;
+		 mysqldump --add-drop-table -u'admin' --socket=$SOCKET -p$(cat /etc/psa/.psa.shadow) $x > "$RESTOREDIR"/$x.sql;
 	done
 
 #Finish up and close the process
