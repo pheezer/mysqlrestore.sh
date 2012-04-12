@@ -56,4 +56,4 @@ kill -15 $( cat /tmp/mysql_pid ) ;
 sleep 5 ;
 echo  " ";
 
-echo "Done.  You databases have been exported to $RESTOREDIR.";
+echo "Done.  Your databases have been exported to $RESTOREDIR.";
