@@ -44,7 +44,7 @@ echo " ";
 echo "Exporting databases:";
 
 #Export the databases
-mysql -u'admin' -p$(cat /etc/psa/.psa.shadow) --socket=$SOCKET -Ns -e'show databases;'| perl -ne 'print unless /\b(mysql|psa|horde|atmail|information_schema|sitebuilder.*|phpmyadmin.*)\b/'|while read x
+mysql -u'admin' -p$(cat /etc/psa/.psa.shadow) --socket=$SOCKET -Ns -e'show databases;'| perl -ne 'print unless /\b(mysql|psa|horde|atmail|information_schema|apsc|sitebuilder.*|phpmyadmin.*)\b/'|while read x
 	do
 		echo -n "Dumping $x ...";
 		 mysqldump --add-drop-table -u'admin' --socket=$SOCKET -p$(cat /etc/psa/.psa.shadow) $x > "$RESTOREDIR"/$x.sql;
