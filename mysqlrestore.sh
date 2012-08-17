@@ -35,7 +35,7 @@ fi
 
 #Start MySQL instance
 echo "Starting MySQL instance...";
-/usr/bin/mysqld_safe --datadir=$DATADIR --log-error=$ERROR_LOG  --pid-file=$PID --skip-external-locking --skip-networking --socket=$SOCKET 2>&1 > /dev/null  &
+/usr/bin/mysqld_safe --user=mysql --datadir=$DATADIR --log-error=$ERROR_LOG  --pid-file=$PID --skip-external-locking --skip-networking --socket=$SOCKET 2>&1 > /dev/null  &
 
 sleep 5 ;
 echo "MySQL started with the proccess: $(cat /tmp/mysql_pid)";
